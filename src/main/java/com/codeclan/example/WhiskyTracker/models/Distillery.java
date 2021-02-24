@@ -21,6 +21,7 @@ public class Distillery {
     private String region;
 
     @OneToMany(mappedBy = "distillery", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"distillery"})
     private List<Whisky> whiskies;
 
     public Distillery(String name, String region) {
