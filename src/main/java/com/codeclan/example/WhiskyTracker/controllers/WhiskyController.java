@@ -49,13 +49,6 @@ public class WhiskyController {
         }}
 
 
-
-
-
-
-
-
-
     @GetMapping(value="/whiskies/{id}")
     public ResponseEntity getWhisky(@PathVariable Long id){
         return new ResponseEntity<>(whiskyRepository.findById(id), HttpStatus.OK);
