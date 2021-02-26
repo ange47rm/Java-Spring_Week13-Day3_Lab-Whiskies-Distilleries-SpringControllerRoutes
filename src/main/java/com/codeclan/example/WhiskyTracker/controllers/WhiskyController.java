@@ -22,27 +22,25 @@ public class WhiskyController {
     public ResponseEntity<List<Whisky>> getWhiskies(
             @RequestParam(name="year", required = false) Integer year,
             @RequestParam(name="age", required = false) Integer age,
-            @RequestParam(name="distillery", required = false) String distillery)   {
+            @RequestParam(name="distillery", required = false) String distilleryName)   {
 
             // if YEAR is provided, return whiskies by year
         if (year != null){
             return new ResponseEntity(whiskyRepository.findWhiskyByYear(year), HttpStatus.OK);
 
             // if DISTILLERY and AGE are provided, return whiskies in a certain distillery of a certain age
-        } else if (distillery != null && age != null) {
-            List<Whisky> foundWhiskies = new ArrayList<Whisky>();
-            List<Whisky> foundWhiskiesByDistillery = whiskyRepository.findWhiskyByDistilleryName(distillery);
-            for (Whisky whisky : foundWhiskiesByDistillery){
-                if (whisky.getAge() == age){
-                    foundWhiskies.add(whisky);}
-            }
+        } else if (distilleryName != null && age != null) {
+            List<Whisky> foundWhiskies = whiskyRepository.findWhiskyByDistilleryNameAndAge(distilleryName, age);
             return new ResponseEntity<>(foundWhiskies, HttpStatus.OK);
+
             // if only AGE is provided, return whiskies by age
         } else if (age != null) {
             return new ResponseEntity(whiskyRepository.findWhiskyByAge(age), HttpStatus.OK);
+
             // if only DISTILLERY is provided, return whiskies by distillery
-        } else if (distillery != null) {
-            return new ResponseEntity(whiskyRepository.findWhiskyByDistilleryName(distillery), HttpStatus.OK);
+        } else if (distilleryName != null) {
+            return new ResponseEntity(whiskyRepository.findWhiskyByDistilleryName(distilleryName), HttpStatus.OK);
+
             // if no parameters are provided, return ALL whiskies
         } else {
             return new ResponseEntity<>(whiskyRepository.findAll(), HttpStatus.OK);
@@ -53,6 +51,40 @@ public class WhiskyController {
     public ResponseEntity getWhisky(@PathVariable Long id){
         return new ResponseEntity<>(whiskyRepository.findById(id), HttpStatus.OK);
     }
+
+
+    // THE BELOW WORKING CODE HAS BEEN REFACTORED, TO USE ONE NEW METHOD IN THE REPOSITORY THAT AT THE SAME TIME GETS,
+    // WHISKIES BY DISTILLERY NAME AND AGE. THIS WAY THERE IS NO WAY TO SET UP AN ADDITIONAL LIST AND A FOR LOOP (SEE LINES 72 AND 73).
+
+//    @GetMapping(value= "/whiskies")
+//    public ResponseEntity<List<Whisky>> getWhiskies(
+//            @RequestParam(name="year", required = false) Integer year,
+//            @RequestParam(name="age", required = false) Integer age,
+//            @RequestParam(name="distillery", required = false) String distillery)   {
+//
+//        // if YEAR is provided, return whiskies by year
+//        if (year != null){
+//            return new ResponseEntity(whiskyRepository.findWhiskyByYear(year), HttpStatus.OK);
+//
+//            // if DISTILLERY and AGE are provided, return whiskies in a certain distillery of a certain age
+//        } else if (distillery != null && age != null) {
+//            List<Whisky> foundWhiskies = new ArrayList<Whisky>();
+//            List<Whisky> foundWhiskiesByDistillery = whiskyRepository.findWhiskyByDistilleryName(distillery);
+//            for (Whisky whisky : foundWhiskiesByDistillery){
+//                if (whisky.getAge() == age){
+//                    foundWhiskies.add(whisky);}
+//            }
+//            return new ResponseEntity<>(foundWhiskies, HttpStatus.OK);
+//            // if only AGE is provided, return whiskies by age
+//        } else if (age != null) {
+//            return new ResponseEntity(whiskyRepository.findWhiskyByAge(age), HttpStatus.OK);
+//            // if only DISTILLERY is provided, return whiskies by distillery
+//        } else if (distillery != null) {
+//            return new ResponseEntity(whiskyRepository.findWhiskyByDistilleryName(distillery), HttpStatus.OK);
+//            // if no parameters are provided, return ALL whiskies
+//        } else {
+//            return new ResponseEntity<>(whiskyRepository.findAll(), HttpStatus.OK);
+//        }}
 
 
 }
